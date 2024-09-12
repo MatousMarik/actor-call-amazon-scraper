@@ -1,5 +1,6 @@
 // Apify SDK - toolkit for building Apify Actors (Read more at https://docs.apify.com/sdk/js/)
 import { Actor } from 'apify';
+import { DownloadItemsFormat } from 'apify-client';
 import axios from 'axios';
 import { Input } from './types.js';
 
@@ -23,7 +24,7 @@ const withClient = async () => {
 
     const dataset = client.run(id).dataset();
 
-    const items = await dataset.downloadItems('csv', {
+    const items = await dataset.downloadItems(DownloadItemsFormat.CSV, {
         limit: maxItems,
         fields,
     });
