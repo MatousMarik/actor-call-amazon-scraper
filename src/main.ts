@@ -2,7 +2,6 @@
 import { Actor } from 'apify';
 import axios from 'axios';
 import { Input } from './types.js';
-// Crawlee - web scraping and browser automation library (Read more at https://crawlee.dev)
 
 // The init() call configures the Actor for its environment. It's recommended to start every Actor with an init()
 await Actor.init();
