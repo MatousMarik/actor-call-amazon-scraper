@@ -38,13 +38,19 @@ const withAPI = async () => {
     const uri = `https://api.apify.com/v2/actor-tasks/${TASK}/run-sync-get-dataset-items?`;
     const url = new URL(uri);
 
-    url.search = new URLSearchParams({
-        memory,
-        format: 'csv',
-        limit: maxItems,
-        fields: fields.join(','),
-        token: process.env.APIFY_TOKEN,
-    });
+    // url.search = new URLSearchParams({
+    //     memory,
+    //     format: 'csv',
+    //     limit: maxItems,
+    //     fields: fields.join(','),
+    //     token: process.env.APIFY_TOKEN,
+    // });
+
+    url.searchParams.append('memory', memory.toString());
+    url.searchParams.append('format', 'csv');
+    url.searchParams.append('limit', maxItems.toString());
+    url.searchParams.append('fields', fields.join(','));
+    url.searchParams.append('token', process.env.APIFY_TOKEN || '');
 
     console.log(url.toString());
 
