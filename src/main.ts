@@ -34,5 +34,22 @@ const withClient = async () => {
     return Actor.setValue('OUTPUT', items, { contentType: 'text/csv' });
 };
 
+const withAPI = async () => {
+    const uri = `https://api.apify.com/v2/actor-tasks/${TASK}/run-sync-get-dataset-items?`;
+    const url = new URL(uri);
+
+    url.search = new URLSearchParams({
+        memory,
+        format: 'csv',
+        limit: maxItems,
+        fields: fields.join(','),
+        token: process.env.APIFY_TOKEN,
+    });
+
+    const { data } = await axios.post(url.toString());
+
+    return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
+};
+
 // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
 await Actor.exit();
