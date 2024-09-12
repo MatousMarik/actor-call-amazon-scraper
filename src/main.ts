@@ -16,5 +16,23 @@ const {
 
 const TASK = 'matymar/dummy-amazon-scraper-google-pixel-task';
 
+const withClient = async () => {
+    const client = Actor.newClient();
+    const task = client.task(TASK);
+
+    const { id } = await task.call({ memory });
+
+    const dataset = client.run(id).dataset();
+
+    const items = await dataset.downloadItems('csv', {
+        limit: maxItems,
+        fields,
+    });
+
+    // If the content type is anything other than JSON, it must
+    // be specified within the third options parameter
+    return Actor.setValue('OUTPUT', items, { contentType: 'text/csv' });
+};
+
 // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
 await Actor.exit();
