@@ -44,11 +44,17 @@ const withAPI = async () => {
         limit: maxItems,
         fields: fields.join(','),
         token: process.env.APIFY_TOKEN,
-    }.toString()).toString();
+    });
 
-    const { data } = await axios.post(url.toString());
+    console.log(url.toString());
 
-    return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
+    try {
+        const { data } = await axios.post(url.toString());
+
+        return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
+    } catch (error) {
+        throw new Error('post error');
+    }
 };
 
 if (useClient) {
