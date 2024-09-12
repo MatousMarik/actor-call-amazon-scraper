@@ -51,5 +51,11 @@ const withAPI = async () => {
     return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
 };
 
+if (useClient) {
+    await withClient();
+} else {
+    await withAPI();
+}
+
 // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
 await Actor.exit();
