@@ -44,7 +44,7 @@ const withAPI = async () => {
         limit: maxItems,
         fields: fields.join(','),
         token: process.env.APIFY_TOKEN,
-    });
+    }.toString()).toString();
 
     const { data } = await axios.post(url.toString());
 
