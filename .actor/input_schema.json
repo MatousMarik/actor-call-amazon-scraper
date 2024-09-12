@@ -21,7 +21,7 @@
         "title": "Fields",
         "type": "array",
         "description": "Enter the dataset fields to export to CSV",
-        "prefill": ["title", "url", "price"],
+        "prefill": ["title", "itemUrl", "price"],
         "editor": "stringList"
       },
       "maxItems": {
