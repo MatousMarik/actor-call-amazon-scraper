@@ -38,29 +38,23 @@ const withAPI = async () => {
     const uri = `https://api.apify.com/v2/actor-tasks/${TASK}/run-sync-get-dataset-items?`;
     const url = new URL(uri);
 
-    // url.search = new URLSearchParams({
-    //     memory,
-    //     format: 'csv',
-    //     limit: maxItems,
-    //     fields: fields.join(','),
-    //     token: process.env.APIFY_TOKEN,
-    // });
+    url.search = new URLSearchParams({
+        memory: memory.toString(),
+        format: 'csv',
+        limit: maxItems.toString(),
+        fields: fields.join(','),
+        token: process.env.APIFY_TOKEN || '',
+    } as Record<string, string>).toString();
 
-    url.searchParams.append('memory', memory.toString());
-    url.searchParams.append('format', 'csv');
-    url.searchParams.append('limit', maxItems.toString());
-    url.searchParams.append('fields', fields.join(','));
-    url.searchParams.append('token', process.env.APIFY_TOKEN || '');
+    // url.searchParams.append('memory', memory.toString());
+    // url.searchParams.append('format', 'csv');
+    // url.searchParams.append('limit', maxItems.toString());
+    // url.searchParams.append('fields', fields.join(','));
+    // url.searchParams.append('token', process.env.APIFY_TOKEN || '');
 
-    console.log(url.toString());
+    const { data } = await axios.post(url.toString());
 
-    try {
-        const { data } = await axios.post(url.toString());
-
-        return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
-    } catch (error) {
-        throw new Error('post error');
-    }
+    return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
 };
 
 if (useClient) {
