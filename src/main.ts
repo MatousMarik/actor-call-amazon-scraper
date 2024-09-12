@@ -9,7 +9,7 @@ await Actor.init();
 const {
     useClient = false,
     memory = 4096,
-    fields = ['title', 'itemUrl', 'offer'],
+    fields = ['title', 'itemUrl', 'price'],
     maxItems = 10,
 } = await Actor.getInput<Input>() ?? {} as Input;
 
