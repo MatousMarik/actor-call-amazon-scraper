@@ -14,7 +14,7 @@ const {
     maxItems = 10,
 } = await Actor.getInput<Input>() ?? {} as Input;
 
-const TASK = 'matymar/dummy-amazon-scraper-google-pixel-task';
+const TASK = 'matymar~dummy-amazon-scraper-google-pixel-task';
 
 const withClient = async () => {
     const client = Actor.newClient();
@@ -52,7 +52,8 @@ const withAPI = async () => {
     // url.searchParams.append('fields', fields.join(','));
     // url.searchParams.append('token', process.env.APIFY_TOKEN || '');
 
-    const { data } = await axios.post(url.toString());
+    console.log(url.toString());
+    const { data } = { data: 0 }; // await axios.post(url.toString());
 
     return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
 };
