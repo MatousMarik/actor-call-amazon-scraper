@@ -52,8 +52,7 @@ const withAPI = async () => {
     // url.searchParams.append('fields', fields.join(','));
     // url.searchParams.append('token', process.env.APIFY_TOKEN || '');
 
-    console.log(url.toString());
-    const { data } = { data: 0 }; // await axios.post(url.toString());
+    const { data } = await axios.post(url.toString());
 
     return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
 };
