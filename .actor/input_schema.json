@@ -11,6 +11,14 @@
         "maximum": 32768,
         "unit": "MB"
       },
+      "timeout": {
+        "title": "Timeout",
+        "type": "integer",
+        "description": "Task max time.",
+        "default": 1000,
+        "maximum": 3000,
+        "unit": "seconds"
+      },
       "useClient": {
         "title": "Use client?",
         "type": "boolean",

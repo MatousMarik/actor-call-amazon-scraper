@@ -3,4 +3,5 @@ export interface Input {
     useClient: boolean;
     fields: string[];
     maxItems: number;
+    timeout: number;
 }

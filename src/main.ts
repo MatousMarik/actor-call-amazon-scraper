@@ -1,5 +1,5 @@
 // Apify SDK - toolkit for building Apify Actors (Read more at https://docs.apify.com/sdk/js/)
-import { Actor } from 'apify';
+import { Actor, log } from 'apify';
 import { DownloadItemsFormat } from 'apify-client';
 import axios from 'axios';
 import { Input } from './types.js';
@@ -10,6 +10,7 @@ await Actor.init();
 const {
     useClient = false,
     memory = 4096,
+    timeout = 1000,
     fields = ['title', 'itemUrl', 'price'],
     maxItems = 10,
 } = await Actor.getInput<Input>() ?? {} as Input;
@@ -17,10 +18,11 @@ const {
 const TASK = 'matymar~dummy-amazon-scraper-google-pixel-task';
 
 const withClient = async () => {
+    log.info('Using client.');
     const client = Actor.newClient();
     const task = client.task(TASK);
 
-    const { id } = await task.call({ memory });
+    const { id } = await task.call({ memory, timeout });
 
     const dataset = client.run(id).dataset();
 
@@ -35,11 +37,13 @@ const withClient = async () => {
 };
 
 const withAPI = async () => {
+    log.info('Using API.');
     const uri = `https://api.apify.com/v2/actor-tasks/${TASK}/run-sync-get-dataset-items?`;
     const url = new URL(uri);
 
     url.search = new URLSearchParams({
         memory: memory.toString(),
+        timeout: timeout.toString(),
         format: 'csv',
         limit: maxItems.toString(),
         fields: fields.join(','),
@@ -65,3 +69,4 @@ if (useClient) {
 
 // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
 await Actor.exit();
+log.info('Finished.');
