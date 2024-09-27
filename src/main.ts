@@ -1,30 +1,23 @@
-// Apify SDK - toolkit for building Apify Actors (Read more at https://docs.apify.com/sdk/js/)
 import { Actor, log } from 'apify';
 import { DownloadItemsFormat } from 'apify-client';
 import axios from 'axios';
-import { Input } from './types.js';
 
-// The init() call configures the Actor for its environment. It's recommended to start every Actor with an init()
-await Actor.init();
-
-const {
-    useClient = false,
-    memory = 4096,
-    timeout = 1000,
-    fields = ['title', 'itemUrl', 'price'],
-    maxItems = 10,
-} = await Actor.getInput<Input>() ?? {} as Input;
-
-const TASK = 'matymar~dummy-amazon-scraper-google-pixel-task';
+interface Input {
+    memory: number;
+    useClient: boolean;
+    fields: string[];
+    maxItems: number;
+    timeout: number;
+}
 
 const withClient = async () => {
     log.info('Using client.');
     const client = Actor.newClient();
     const task = client.task(TASK);
 
-    const { id } = await task.call({ memory, timeout });
+    const { defaultDatasetId } = await task.call({ memory, timeout });
 
-    const dataset = client.run(id).dataset();
+    const dataset = client.dataset(defaultDatasetId);
 
     const items = await dataset.downloadItems(DownloadItemsFormat.CSV, {
         limit: maxItems,
@@ -50,16 +43,24 @@ const withAPI = async () => {
         token: process.env.APIFY_TOKEN || '',
     } as Record<string, string>).toString();
 
-    // url.searchParams.append('memory', memory.toString());
-    // url.searchParams.append('format', 'csv');
-    // url.searchParams.append('limit', maxItems.toString());
-    // url.searchParams.append('fields', fields.join(','));
-    // url.searchParams.append('token', process.env.APIFY_TOKEN || '');
-
     const { data } = await axios.post(url.toString());
 
     return Actor.setValue('OUTPUT', data, { contentType: 'text/csv' });
 };
+
+// ********* MAIN BELLOW *********
+
+await Actor.init();
+
+const {
+    useClient = false,
+    memory = 4096,
+    timeout = 1000,
+    fields = ['title', 'itemUrl', 'price'],
+    maxItems = 10,
+} = await Actor.getInput<Input>() ?? {} as Input;
+
+const TASK = 'matymar~dummy-amazon-scraper-google-pixel-task';
 
 if (useClient) {
     await withClient();
@@ -67,6 +68,5 @@ if (useClient) {
     await withAPI();
 }
 
-// Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
-await Actor.exit();
 log.info('Finished.');
+await Actor.exit();
